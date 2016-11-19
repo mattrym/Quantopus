@@ -43,6 +43,7 @@ namespace Quantopus.OctalTree
 
 		private int GetColor(int argb)
 		{
+			argb |= 0x00FFFFFF;
 			OctreeNode currentNode = Head;
 			int[] octTriples = RGB.OctTriples(argb);
 
@@ -57,7 +58,7 @@ namespace Quantopus.OctalTree
 					break;
 				}
 			}
-			return currentNode.RGBToInt();
+			return argb & currentNode.RGBToInt();
 		}
 
 		private void AddColor(int rgb, int colorNumber)

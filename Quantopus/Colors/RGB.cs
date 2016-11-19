@@ -15,13 +15,14 @@ namespace Quantopus.Colors
 		public static int[] OctTriples(int rgb)
 		{
 			int r = (rgb >> 16) & 0xFF, g = (rgb >> 8) & 0xFF, b = rgb & 0xFF;
+
 			int[] octTriples = new int[8];
 			for (int i = 0; i < 8; ++i)
 			{
 				octTriples[7 - i] =
-					(((r >> i) & 1) << 2) |     // getting i-th bit of r color
-					(((g >> i) & 1) << 1) |     // getting i-th bit of g color
-					((b >> i) & 1);             // getting i-th bit of c color
+					(r >> (i + 2)) & 4 |     // getting i-th bit of r color
+					(g >> (i + 1)) & 2 |     // getting i-th bit of g color
+					(b >> i) & 1;             // getting i-th bit of c color
 			}
 			return octTriples;
 		}

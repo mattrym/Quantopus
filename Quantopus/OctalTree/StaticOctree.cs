@@ -72,15 +72,13 @@ namespace Quantopus.OctalTree
 				if (currentNode.Children == null)
 				{
 					currentNode.Children = new OctreeNode[8];
-					if (!BranchList[levelIndex].Contains(currentNode))
-					{
-						BranchList[levelIndex].Add(currentNode);
-					}
+					BranchList[levelIndex].Add(currentNode);
 				}
 				if (currentNode.Children[childIndex] == null)
 				{
 					childNode = new OctreeNode();
-					
+					if(levelIndex == 7)
+						LeafList.Add(childNode);
 					currentNode.Children[childIndex] = childNode;
 				}
 				else
@@ -89,10 +87,6 @@ namespace Quantopus.OctalTree
 				}
 				childNode.AddReference(rgb);
 				currentNode = childNode;
-			}
-			if(!LeafList.Contains(currentNode))
-			{
-				LeafList.Add(currentNode);
 			}
 		}
 

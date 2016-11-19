@@ -13,6 +13,9 @@ namespace Quantopus
 {
 	public partial class Window : Form
 	{
+		private DirectBitmap originalBitmap;
+		private DirectBitmap reducedBitmap;
+		
 		public Window()
 		{
 			InitializeComponent();

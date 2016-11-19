@@ -10,7 +10,7 @@ namespace Quantopus.OctalTree
 	class OctreeNode
 	{
 		public OctreeNode[] Children { get; set; }
-		public ulong ReferenceCount { get; set; }
+		public uint ReferenceCount { get; set; }
 		public RGB RGB { get; set; }
 
 		public OctreeNode()
@@ -37,9 +37,9 @@ namespace Quantopus.OctalTree
 
 		public int RGBToInt()
 		{
-			int r = (int)((decimal)RGB.R / ReferenceCount);
-			int g = (int)((decimal)RGB.G / ReferenceCount);
-			int b = (int)((decimal)RGB.B / ReferenceCount);
+			int r = (int)(RGB.R / ReferenceCount);
+			int g = (int)(RGB.G / ReferenceCount);
+			int b = (int)(RGB.B / ReferenceCount);
 			return 255 << 24 | r << 16 | g << 8 | b; 
 		}
 	}

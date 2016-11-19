@@ -37,6 +37,7 @@
 			this.qunatizeWithDynamicTreeReductionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			this.SuspendLayout();
@@ -56,6 +57,7 @@
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
+            this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -110,7 +112,7 @@
 			this.numericUpDown1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.numericUpDown1.Location = new System.Drawing.Point(134, 4);
 			this.numericUpDown1.Maximum = new decimal(new int[] {
-            1024,
+            4096,
             0,
             0,
             0});
@@ -127,6 +129,12 @@
             0,
             0,
             0});
+			// 
+			// saveToolStripMenuItem
+			// 
+			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Text = "Save";
 			// 
 			// Window
 			// 
@@ -158,6 +166,7 @@
 		private System.Windows.Forms.ToolStripMenuItem qunatizeWithDynamicTreeReductionToolStripMenuItem;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.NumericUpDown numericUpDown1;
+		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 	}
 }
 
