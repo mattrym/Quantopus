@@ -11,14 +11,19 @@ namespace Quantopus.OctalTree
 	class StaticOctree : IOctree
 	{
 		OctreeNode Head { get; }
-		List<OctreeNode> BranchList { get; }
+		List<OctreeNode>[] BranchList { get; }
 		List<OctreeNode> LeafList { get; }
 
 		public StaticOctree(DirectBitmap bitmap, int colorNumber)
 		{
-			Head = new OctreeNode(-1);
-			BranchList = new List<OctreeNode>();
+			Head = new OctreeNode();
+			BranchList = new List<OctreeNode>[8];
 			LeafList = new List<OctreeNode>();
+
+			for(int i = 0; i < 8; ++i)
+			{
+				BranchList[i] = new List<OctreeNode>();
+			}
 
 			ConstructTree(bitmap, colorNumber);
 		}
@@ -58,7 +63,7 @@ namespace Quantopus.OctalTree
 		private void AddColor(int rgb)
 		{
 			int[] octTriples = RGB.OctTriples(rgb);
-			OctreeNode currentNode = Head, childNode;
+			OctreeNode childNode, currentNode = Head;
 
 			currentNode.AddReference(rgb);
 			for(int levelIndex = 0; levelIndex < 8; ++levelIndex)
@@ -67,17 +72,21 @@ namespace Quantopus.OctalTree
 				if (currentNode.Children == null)
 				{
 					currentNode.Children = new OctreeNode[8];
-					if(!BranchList.Contains(currentNode))
+					if (!BranchList[levelIndex].Contains(currentNode))
 					{
-						BranchList.Add(currentNode);
+						BranchList[levelIndex].Add(currentNode);
 					}
 				}
 				if (currentNode.Children[childIndex] == null)
 				{
-					childNode = new OctreeNode(levelIndex);
+					childNode = new OctreeNode();
+					
 					currentNode.Children[childIndex] = childNode;
 				}
-				childNode = currentNode.Children[childIndex];
+				else
+				{
+					childNode = currentNode.Children[childIndex];
+				}
 				childNode.AddReference(rgb);
 				currentNode = childNode;
 			}
@@ -89,34 +98,36 @@ namespace Quantopus.OctalTree
 
 		private void ReduceColors(int colorCount)
 		{
+			int currentLevel = 7;
 			while(LeafList.Count > colorCount)
 			{
-				BranchList.Sort((n1, n2) => 
+				if(BranchList[currentLevel].Count == 0)
 				{
-					int refSubtraction = (int)(n1.ReferenceCount - n2.ReferenceCount);
-					if (refSubtraction == 0)
-						return n2.Level - n1.Level;
-					return refSubtraction;
-				});
-				ReduceNode(BranchList[0]);
+					--currentLevel;
+					BranchList[currentLevel].Sort((n1, n2) =>
+					{
+						return (int)(n1.ReferenceCount - n2.ReferenceCount);
+					});
+				}
+				ReduceLevel(currentLevel);
 			}
 		}
 
-		private void ReduceNode(OctreeNode node)
+		private void ReduceLevel(int currentLevel)
 		{
-			BranchList.Remove(node);
-			foreach(OctreeNode child in node.Children)
+			OctreeNode removedNode = BranchList[currentLevel][0];
+			BranchList[currentLevel].Remove(removedNode);
+			foreach(OctreeNode child in removedNode.Children)
 			{
 				if(child != null)
 				{
-					node.ReferenceCount += child.ReferenceCount;
-					node.RGB += child.RGB;
+					removedNode.ReferenceCount += child.ReferenceCount;
+					removedNode.RGB += child.RGB;
 					LeafList.Remove(child);
 				}
 			}
-			node.Children = null;
-			--node.Level;
-			LeafList.Add(node);
+			removedNode.Children = null;
+			LeafList.Add(removedNode);
 		}
 	}
 }

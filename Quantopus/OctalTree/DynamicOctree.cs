@@ -15,7 +15,7 @@ namespace Quantopus.OctalTree
 
 		public DynamicOctree(DirectBitmap bitmap, int colorNumber)
 		{
-			Head = new OctreeNode(-1);
+			Head = new OctreeNode();
 			BranchList = new List<OctreeNode>();
 			LeafList = new List<OctreeNode>();
 
@@ -79,7 +79,7 @@ namespace Quantopus.OctalTree
 				}
 				if (currentNode.Children[childIndex] == null)
 				{
-					childNode = new OctreeNode(levelIndex);
+					childNode = new OctreeNode();
 					currentNode.Children[childIndex] = childNode;
 				}
 				childNode = currentNode.Children[childIndex];
@@ -100,10 +100,7 @@ namespace Quantopus.OctalTree
 		{
 			BranchList.Sort((n1, n2) =>
 			{
-				int refSubtraction = (int)(n1.ReferenceCount - n2.ReferenceCount);
-				if (refSubtraction == 0)
-					return n2.Level - n1.Level;
-				return refSubtraction;
+				return (int)(n1.ReferenceCount - n2.ReferenceCount);
 			});
 			ReduceNode(BranchList[0]);
 		}
@@ -121,7 +118,6 @@ namespace Quantopus.OctalTree
 				}
 			}
 			node.Children = null;
-			--node.Level;
 			LeafList.Add(node);
 		}
 	}

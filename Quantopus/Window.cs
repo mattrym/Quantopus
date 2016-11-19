@@ -25,7 +25,7 @@ namespace Quantopus
 			{
 				int colorNumber = (int)numericUpDown1.Value;
 				DirectBitmap bitmap = DirectBitmap.FromBitmap(new Bitmap(fileDialog.FileName));
-				DynamicOctree octree = new DynamicOctree(bitmap, colorNumber);
+				StaticOctree octree = new StaticOctree(bitmap, colorNumber);
 				DirectBitmap newBitmap = new DirectBitmap(bitmap.Width, bitmap.Height);
 				for(int x = 0; x < newBitmap.Width; ++x)
 				{
