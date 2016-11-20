@@ -7,64 +7,83 @@ using System.Threading.Tasks;
 
 namespace Quantopus.OctalTree
 {
-	class DynamicOctree : IOctree
+	class DynamicOctree
 	{
-		OctreeNode Head { get; }
-		List<OctreeNode> BranchList { get; }
-		List<OctreeNode> LeafList { get; }
+		public static DirectBitmap Quantize(DirectBitmap bitmap, int colorCount)
+		{
+			DynamicOctree octree = new DynamicOctree(bitmap, colorCount);
+			DirectBitmap resultBitmap = new DirectBitmap(bitmap.Width, bitmap.Height);
 
-		public DynamicOctree(DirectBitmap bitmap, int colorNumber)
+			for (int x = 0; x < resultBitmap.Width; ++x)
+			{
+				for (int y = 0; y < resultBitmap.Height; ++y)
+				{
+					resultBitmap[x, y] = octree.QuantizePixel(bitmap[x, y]);
+				}
+			}
+			return resultBitmap;
+		}
+
+		OctreeNode Head { get; }
+		List<OctreeNode>[] BranchList { get; }
+		List<OctreeNode> LeafList { get; }
+		int ColorCount { get; }
+
+		private DynamicOctree(DirectBitmap bitmap, int colorCount)
 		{
 			Head = new OctreeNode();
-			BranchList = new List<OctreeNode>();
+			BranchList = new List<OctreeNode>[8];
+			for (int i = 0; i < 8; ++i)
+			{
+				BranchList[i] = new List<OctreeNode>();
+			}
 			LeafList = new List<OctreeNode>();
-
-			ConstructTree(bitmap, colorNumber);
+			ColorCount = colorCount;
+			ConstructTree(bitmap);
 		}
 
-		public int this[int argb]
+		private void Quantize(int colorCount)
 		{
-			get
+			int currentLevel = 7;
+			while (LeafList.Count > colorCount)
 			{
-				return GetColor(argb);
+				if (BranchList[currentLevel].Count == 0)
+				{
+					--currentLevel;
+					BranchList[currentLevel].Sort((n1, n2) =>
+					{
+						return (int)(n1.ReferenceCount - n2.ReferenceCount);
+					});
+				}
+				ReduceLevel(currentLevel);
 			}
 		}
 
-		private void ConstructTree(DirectBitmap bitmap, int colorNumber)
+		private int QuantizePixel(int argb)
 		{
-			//Parallel.ForEach(bitmap.Bits, bit => {
-			//	AddColor(bit);
-			//});
-			foreach (int bit in bitmap.Bits)
-			{
-				AddColor(bit, colorNumber);
-			}
-		}
-
-		private int GetColor(int argb)
-		{
-			argb |= 0x00FFFFFF;
 			OctreeNode currentNode = Head;
 			int[] octTriples = RGB.OctTriples(argb);
+			int aMask = argb | 0x00FFFFFF;
 
 			for (int i = 0; i < 8 && currentNode.Children != null; ++i)
 			{
-				if(currentNode.Children[octTriples[i]] != null)
-				{
-					currentNode = currentNode.Children[octTriples[i]];
-				}
-				else
-				{
-					break;
-				}
+				currentNode = currentNode.Children[octTriples[i]];
 			}
-			return argb & currentNode.RGBToInt();
+			return aMask & currentNode.RGBToInt();
 		}
 
-		private void AddColor(int rgb, int colorNumber)
+		private void ConstructTree(DirectBitmap bitmap)
+		{
+			foreach (int bit in bitmap.Bits)
+			{
+				AddColor(bit);
+			}
+		}
+
+		private void AddColor(int rgb)
 		{
 			int[] octTriples = RGB.OctTriples(rgb);
-			OctreeNode currentNode = Head, childNode;
+			OctreeNode childNode, currentNode = Head;
 
 			currentNode.AddReference(rgb);
 			for (int levelIndex = 0; levelIndex < 8; ++levelIndex)
@@ -73,53 +92,45 @@ namespace Quantopus.OctalTree
 				if (currentNode.Children == null)
 				{
 					currentNode.Children = new OctreeNode[8];
-					if (!BranchList.Contains(currentNode))
-					{
-						BranchList.Add(currentNode);
-					}
+					BranchList[levelIndex].Add(currentNode);
 				}
 				if (currentNode.Children[childIndex] == null)
 				{
 					childNode = new OctreeNode();
+					if (levelIndex == 7)
+						LeafList.Add(childNode);
 					currentNode.Children[childIndex] = childNode;
 				}
-				childNode = currentNode.Children[childIndex];
+				else
+				{
+					childNode = currentNode.Children[childIndex];
+				}
 				childNode.AddReference(rgb);
 				currentNode = childNode;
 			}
-			if (!LeafList.Contains(currentNode))
+			if(LeafList.Count > ColorCount)
 			{
-				LeafList.Add(currentNode);
-				if(LeafList.Count > colorNumber)
-				{
-					ReduceColors();
-				}
+				Quantize(ColorCount);
 			}
 		}
 
-		private void ReduceColors()
+		private void ReduceLevel(int currentLevel)
 		{
-			BranchList.Sort((n1, n2) =>
-			{
-				return (int)(n1.ReferenceCount - n2.ReferenceCount);
-			});
-			ReduceNode(BranchList[0]);
-		}
+			OctreeNode removedNode = BranchList[currentLevel][0];
+			BranchList[currentLevel].Remove(removedNode);
 
-		private void ReduceNode(OctreeNode node)
-		{
-			BranchList.Remove(node);
-			foreach (OctreeNode child in node.Children)
+			foreach (OctreeNode child in removedNode.Children)
 			{
 				if (child != null)
 				{
-					node.ReferenceCount += child.ReferenceCount;
-					node.RGB += child.RGB;
+					removedNode.ReferenceCount += child.ReferenceCount;
+					removedNode.RGB += child.RGB;
 					LeafList.Remove(child);
 				}
 			}
-			node.Children = null;
-			LeafList.Add(node);
+
+			removedNode.Children = null;
+			LeafList.Add(removedNode);
 		}
 	}
 }
