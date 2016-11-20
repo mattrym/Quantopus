@@ -86,7 +86,6 @@ namespace Quantopus.OctalTree
 			int[] octTriples = RGB.OctTriples(rgb);
 			OctreeNode childNode, currentNode = Head;
 
-			currentNode.AddReference(rgb);
 			for(int levelIndex = 0; levelIndex < 8; ++levelIndex)
 			{
 				int childIndex = octTriples[levelIndex];
@@ -106,9 +105,10 @@ namespace Quantopus.OctalTree
 				{
 					childNode = currentNode.Children[childIndex];
 				}
-				childNode.AddReference(rgb);
+				currentNode.AddReference(rgb);
 				currentNode = childNode;
 			}
+			currentNode.AddReference(rgb);
 		}
 
 		private void ReduceLevel(int currentLevel)

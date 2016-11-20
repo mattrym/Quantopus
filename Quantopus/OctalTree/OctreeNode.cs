@@ -12,6 +12,7 @@ namespace Quantopus.OctalTree
 		public OctreeNode[] Children { get; set; }
 		public ulong ReferenceCount { get; set; }
 		public RGB RGB { get; set; }
+		public bool Leaf { get; set; }
 
 		public void AddReference(int _rgb)
 		{

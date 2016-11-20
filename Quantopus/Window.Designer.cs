@@ -39,6 +39,7 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
+			this.originalPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			this.SuspendLayout();
@@ -67,7 +68,7 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
@@ -82,13 +83,14 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
 			// 
 			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.originalPaletteToolStripMenuItem,
             this.quantizeWithToolStripMenuItem,
             this.qunatizeWithDynamicTreeReductionToolStripMenuItem});
 			this.editToolStripMenuItem.Enabled = false;
@@ -99,15 +101,15 @@
 			// quantizeWithToolStripMenuItem
 			// 
 			this.quantizeWithToolStripMenuItem.Name = "quantizeWithToolStripMenuItem";
-			this.quantizeWithToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-			this.quantizeWithToolStripMenuItem.Text = "Static tree reduction";
+			this.quantizeWithToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.quantizeWithToolStripMenuItem.Text = "Octree";
 			this.quantizeWithToolStripMenuItem.Click += new System.EventHandler(this.quantizeWithToolStripMenuItem_Click);
 			// 
 			// qunatizeWithDynamicTreeReductionToolStripMenuItem
 			// 
 			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Name = "qunatizeWithDynamicTreeReductionToolStripMenuItem";
-			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Text = "Dynamic tree reduction";
+			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Text = "Octree dynamic";
 			this.qunatizeWithDynamicTreeReductionToolStripMenuItem.Click += new System.EventHandler(this.qunatizeWithDynamicTreeReductionToolStripMenuItem_Click);
 			// 
 			// panel1
@@ -155,6 +157,13 @@
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Palette";
 			// 
+			// originalPaletteToolStripMenuItem
+			// 
+			this.originalPaletteToolStripMenuItem.Name = "originalPaletteToolStripMenuItem";
+			this.originalPaletteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.originalPaletteToolStripMenuItem.Text = "Original palette";
+			this.originalPaletteToolStripMenuItem.Click += new System.EventHandler(this.originalPaletteToolStripMenuItem_Click);
+			// 
 			// Window
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -188,6 +197,7 @@
 		private System.Windows.Forms.NumericUpDown numericUpDown1;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolStripMenuItem originalPaletteToolStripMenuItem;
 	}
 }
 

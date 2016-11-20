@@ -45,7 +45,7 @@ namespace Quantopus.OctalTree
 		private void Quantize(int colorCount)
 		{
 			int currentLevel = 7;
-			while (LeafList.Count > colorCount)
+			while (LeafList.Count > ColorCount)
 			{
 				if (BranchList[currentLevel].Count == 0)
 				{
@@ -65,7 +65,7 @@ namespace Quantopus.OctalTree
 			int[] octTriples = RGB.OctTriples(argb);
 			int aMask = argb | 0x00FFFFFF;
 
-			for (int i = 0; i < 8 && currentNode.Children != null; ++i)
+			for (int i = 0; i < 8 && !currentNode.Leaf; ++i)
 			{
 				currentNode = currentNode.Children[octTriples[i]];
 			}
@@ -85,29 +85,39 @@ namespace Quantopus.OctalTree
 			int[] octTriples = RGB.OctTriples(rgb);
 			OctreeNode childNode, currentNode = Head;
 
-			currentNode.AddReference(rgb);
 			for (int levelIndex = 0; levelIndex < 8; ++levelIndex)
 			{
 				int childIndex = octTriples[levelIndex];
 				if (currentNode.Children == null)
 				{
-					currentNode.Children = new OctreeNode[8];
-					BranchList[levelIndex].Add(currentNode);
+					if(!currentNode.Leaf)
+					{
+						currentNode.Children = new OctreeNode[8];
+						BranchList[levelIndex].Add(currentNode);
+					}
+					else
+					{
+						break;
+					}
 				}
 				if (currentNode.Children[childIndex] == null)
 				{
 					childNode = new OctreeNode();
 					if (levelIndex == 7)
+					{
 						LeafList.Add(childNode);
+						childNode.Leaf = true;
+					}
 					currentNode.Children[childIndex] = childNode;
 				}
 				else
 				{
 					childNode = currentNode.Children[childIndex];
 				}
-				childNode.AddReference(rgb);
+				currentNode.AddReference(rgb);
 				currentNode = childNode;
 			}
+			currentNode.AddReference(rgb);
 			if(LeafList.Count > ColorCount)
 			{
 				Quantize(ColorCount);
@@ -130,6 +140,7 @@ namespace Quantopus.OctalTree
 			}
 
 			removedNode.Children = null;
+			removedNode.Leaf = true;
 			LeafList.Add(removedNode);
 		}
 	}

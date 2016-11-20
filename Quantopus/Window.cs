@@ -27,7 +27,9 @@ namespace Quantopus
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			FileDialog fileDialog = new OpenFileDialog();
-			if(fileDialog.ShowDialog() == DialogResult.OK)
+			fileDialog.Filter = "BMP|*.bmp|GIF|*.gif|JPG|*.jpg;*.jpeg|PNG|*.png|TIFF|*.tif;*.tiff|"
+	   + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
 				Bitmap bitmap = new Bitmap(fileDialog.FileName);
 				originalBitmap = DirectBitmap.FromBitmap(bitmap);
@@ -44,7 +46,9 @@ namespace Quantopus
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			FileDialog fileDialog = new SaveFileDialog();
-			if(fileDialog.ShowDialog() == DialogResult.OK)
+			fileDialog.Filter = "BMP|*.bmp|GIF|*.gif|JPG|*.jpg;*.jpeg|PNG|*.png|TIFF|*.tif;*.tiff|"
+	   + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
 				reducedBitmap.Bitmap.Save(fileDialog.FileName);
 			}
@@ -60,9 +64,14 @@ namespace Quantopus
 			int colorCount = (int)numericUpDown1.Value;
 			new Task(() =>
 			{
-				reducedBitmap = StaticOctree.Quantize(originalBitmap, colorCount);
+				reducedBitmap = DynamicOctree.Quantize(originalBitmap, colorCount);
 				panel1.BackgroundImage = reducedBitmap.Bitmap;
 			}).Start();
+		}
+
+		private void originalPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			panel1.BackgroundImage = originalBitmap.Bitmap;
 		}
 
 		private void quantizeWithToolStripMenuItem_Click(object sender, EventArgs e)
