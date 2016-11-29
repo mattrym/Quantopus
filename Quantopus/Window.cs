@@ -20,8 +20,6 @@ namespace Quantopus
 		public Window()
 		{
 			InitializeComponent();
-			widthOffest = Width - panel1.Width;
-			heightOffset = Height - panel1.Height;
 		}
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -33,10 +31,7 @@ namespace Quantopus
 			{
 				Bitmap bitmap = new Bitmap(fileDialog.FileName);
 				originalBitmap = DirectBitmap.FromBitmap(bitmap);
-				panel1.BackgroundImage = originalBitmap.Bitmap;
-
-				Width = originalBitmap.Width + widthOffest;
-				Height = originalBitmap.Height + heightOffset;
+                originalPictureBox.Image = bitmap;
 
 				saveToolStripMenuItem.Enabled = true;
 				editToolStripMenuItem.Enabled = true;
@@ -65,23 +60,18 @@ namespace Quantopus
 			new Task(() =>
 			{
 				reducedBitmap = DynamicOctree.Quantize(originalBitmap, colorCount);
-				panel1.BackgroundImage = reducedBitmap.Bitmap;
+                quantizedPictureBox.Image = reducedBitmap.Bitmap;
 			}).Start();
 		}
 
-		private void originalPaletteToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			panel1.BackgroundImage = originalBitmap.Bitmap;
-		}
-
-		private void quantizeWithToolStripMenuItem_Click(object sender, EventArgs e)
+        private void quantizeWithToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			int colorCount = (int) numericUpDown1.Value;
 			new Task(() =>
 			{
 				reducedBitmap = StaticOctree.Quantize(originalBitmap, colorCount);
-				panel1.BackgroundImage = reducedBitmap.Bitmap;
-			}).Start();	
+                quantizedPictureBox.Image = reducedBitmap.Bitmap;
+            }).Start();	
 		}
 	}
 }

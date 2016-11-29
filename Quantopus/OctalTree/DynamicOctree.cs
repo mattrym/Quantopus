@@ -45,18 +45,18 @@ namespace Quantopus.OctalTree
 		private void Quantize(int colorCount)
 		{
 			int currentLevel = 7;
-			while (LeafList.Count > ColorCount)
+			while (BranchList[currentLevel].Count == 0 && currentLevel > 0)
 			{
-				if (BranchList[currentLevel].Count == 0)
+				--currentLevel;
+				BranchList[currentLevel].Sort((n1, n2) =>
 				{
-					--currentLevel;
-					BranchList[currentLevel].Sort((n1, n2) =>
-					{
-						return (int)(n1.ReferenceCount - n2.ReferenceCount);
-					});
-				}
-				ReduceLevel(currentLevel);
+					return (int)(n1.ReferenceCount - n2.ReferenceCount);
+				});	
 			}
+            if(currentLevel >= 0)
+            {
+                ReduceLevel(currentLevel);
+            }
 		}
 
 		private int QuantizePixel(int argb)
