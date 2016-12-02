@@ -13,14 +13,14 @@ namespace Quantopus
 {
 	public partial class Window : Form
 	{
-		private int widthOffest, heightOffset;
+		private int widthOffset, heightOffset;
 		private DirectBitmap originalBitmap;
 		private DirectBitmap reducedBitmap;
 		
 		public Window()
 		{
 			InitializeComponent();
-			widthOffest = Width - panel1.Width;
+			widthOffset = Width - panel1.Width;
 			heightOffset = Height - panel1.Height;
 		}
 
@@ -28,14 +28,14 @@ namespace Quantopus
 		{
 			FileDialog fileDialog = new OpenFileDialog();
 			fileDialog.Filter = "BMP|*.bmp|GIF|*.gif|JPG|*.jpg;*.jpeg|PNG|*.png|TIFF|*.tif;*.tiff|"
-	   + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+				+ "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
 			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
 				Bitmap bitmap = new Bitmap(fileDialog.FileName);
 				originalBitmap = DirectBitmap.FromBitmap(bitmap);
 				panel1.BackgroundImage = originalBitmap.Bitmap;
 
-				Width = originalBitmap.Width + widthOffest;
+				Width = originalBitmap.Width + widthOffset;
 				Height = originalBitmap.Height + heightOffset;
 
 				saveToolStripMenuItem.Enabled = true;
@@ -47,7 +47,7 @@ namespace Quantopus
 		{
 			FileDialog fileDialog = new SaveFileDialog();
 			fileDialog.Filter = "BMP|*.bmp|GIF|*.gif|JPG|*.jpg;*.jpeg|PNG|*.png|TIFF|*.tif;*.tiff|"
-	   + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+				+ "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
 			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
 				reducedBitmap.Bitmap.Save(fileDialog.FileName);
