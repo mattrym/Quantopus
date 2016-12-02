@@ -120,8 +120,8 @@ namespace Quantopus.OctalTree
 			{
 				if(child != null)
 				{
-					removedNode.ReferenceCount += child.ReferenceCount;
-					removedNode.RGB += child.RGB;
+					//removedNode.ReferenceCount += child.ReferenceCount;
+					//removedNode.RGB += child.RGB;
 					LeafList.Remove(child);
 				}
 			}

@@ -10,10 +10,23 @@ namespace Quantopus.OctalTree
 	class OctreeNode
 	{
 		public OctreeNode[] Children { get; set; }
-		private ulong ReferenceCount { get; set; }
-		private RGB RGB { get; set; }
+		public ulong ReferenceCount { get; set; }
+
+		public RGB RGB { get; set; }
 		public bool Leaf { get; set; }
 
+		public OctreeNode()
+		{
+		}
+
+		public OctreeNode(bool _leaf)
+		{
+			Leaf = _leaf;
+			if (!Leaf)
+			{
+				Children = new OctreeNode[8];
+			}
+		}
 		public void AddReference(int _rgb)
 		{
 			ReferenceCount++;

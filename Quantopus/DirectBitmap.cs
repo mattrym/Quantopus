@@ -25,17 +25,7 @@ namespace Quantopus
 		public bool Disposed { get; private set; }
 		public int Height { get; private set; }
 		public int Width { get; private set; }
-
 		protected GCHandle BitsHandle { get; private set; }
-
-		public DirectBitmap(int width, int height)
-		{
-			Width = width;
-			Height = height;
-			Bits = new Int32[width * height];
-			BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-			Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
-		}
 
 		public Int32 this[int x, int y]
 		{
@@ -53,11 +43,18 @@ namespace Quantopus
 			}
 		}
 
-		public double R(int x, int y) => ((this[x, y] >> 16) & 255) / (double)255;
+		public double R(int x, int y) => ((this[x, y] >> 16) & 255) / 255.0;
+		public double G(int x, int y) => ((this[x, y] >> 8) & 255) / 255.0;
+		public double B(int x, int y) => (this[x, y] & 255) / 255.0;
 
-		public double G(int x, int y) => ((this[x, y] >> 8) & 255) / (double)255;
-
-		public double B(int x, int y) => (this[x, y] & 255) / (double)255;
+		public DirectBitmap(int width, int height)
+		{
+			Width = width;
+			Height = height;
+			Bits = new Int32[width * height];
+			BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
+			Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
+		}
 
 		public void Dispose()
 		{

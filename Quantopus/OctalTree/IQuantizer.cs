@@ -8,6 +8,6 @@ namespace Quantopus.OctalTree
 {
     interface IQuantizer
     {
-
+		DirectBitmap Quantize(DirectBitmap originalBitmap, int colorCount);
     }
 }
