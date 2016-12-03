@@ -13,9 +13,8 @@ namespace Quantopus
 {
 	public partial class Window : Form
 	{
-		private int widthOffest, heightOffset;
+		private OctreeQuantizer quantizer;
 		private DirectBitmap originalBitmap;
-		private DirectBitmap reducedBitmap;
 		
 		public Window()
 		{
@@ -59,8 +58,8 @@ namespace Quantopus
 			int colorCount = (int)numericUpDown1.Value;
 			new Task(() =>
 			{
-				reducedBitmap = DynamicOctree.Quantize(originalBitmap, colorCount);
-                quantizedPictureBox.Image = reducedBitmap.Bitmap;
+				quantizer = new DynamicOctree(originalBitmap, colorCount);
+                quantizedPictureBox.Image = quantizer.Quantize().Bitmap;
 			}).Start();
 		}
 
@@ -69,9 +68,9 @@ namespace Quantopus
 			int colorCount = (int) numericUpDown1.Value;
 			new Task(() =>
 			{
-				reducedBitmap = StaticOctree.Quantize(originalBitmap, colorCount);
-                quantizedPictureBox.Image = reducedBitmap.Bitmap;
-            }).Start();	
+				quantizer = new StaticOctree(originalBitmap, colorCount);
+				quantizedPictureBox.Image = quantizer.Quantize().Bitmap;
+			}).Start();	
 		}
 	}
 }

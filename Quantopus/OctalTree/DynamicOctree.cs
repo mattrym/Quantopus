@@ -7,58 +7,21 @@ using System.Threading.Tasks;
 
 namespace Quantopus.OctalTree
 {
-	class DynamicOctree : IQuantizer
+	class DynamicOctree : OctreeQuantizer
 	{
-		private int ColorCount;
-		private OctreeNode Head { get; }
-		private List<OctreeNode>[] BranchList { get; }
-		private List<OctreeNode> LeafList { get; }	
-
-		public DynamicOctree(DirectBitmap bitmap, int colorCount)
+		public DynamicOctree(DirectBitmap _originalBitmap, int _colorCount) : base(_originalBitmap, _colorCount)
 		{
-			ColorCount = colorCount;
-			Head = new OctreeNode();
-			BranchList = new List<OctreeNode>[8];
-			LeafList = new List<OctreeNode>();
+		}
 
-			for (int i = 0; i < 8; ++i)
-			{
-				BranchList[i] = new List<OctreeNode>();
-			}
-			foreach (int bit in bitmap.Bits)
+		protected override void ConstructTree()
+		{
+			foreach (int bit in originalBitmap.Bits)
 			{
 				AddColor(bit);
 			}
 		}
 
-		private void ReduceTree(int colorCount)
-		{
-			int currentLevel = 7;
-			while (BranchList[currentLevel].Count == 0 && currentLevel > 0)
-			{
-				--currentLevel;
-				BranchList[currentLevel].Sort((n1, n2) =>
-				{
-					return (int)(n1.ReferenceCount - n2.ReferenceCount);
-				});
-			}
-			ReduceLevel(currentLevel);
-		}
-
-		private int QuantizePixel(int argb)
-		{
-			OctreeNode currentNode = Head;
-			int[] octTriples = RGB.OctTriples(argb);
-			int aMask = argb | 0x00FFFFFF;
-
-			for (int i = 0; i < 8 && !currentNode.Leaf; ++i)
-			{
-				currentNode = currentNode.Children[octTriples[i]];
-			}
-			return aMask & currentNode.RGBToInt();
-		}
-
-		private void AddColor(int rgb)
+		protected override void AddColor(int rgb)
 		{
 			int[] octTriples = RGB.OctTriples(rgb);
 			OctreeNode childNode, currentNode = Head;
@@ -96,43 +59,10 @@ namespace Quantopus.OctalTree
 				currentNode = childNode;
 			}
 			currentNode.AddReference(rgb);
-			if(LeafList.Count > ColorCount)
+			if(LeafList.Count > colorCount)
 			{
-				ReduceTree(ColorCount);
+				ReduceTree();
 			}
-		}
-
-		private void ReduceLevel(int currentLevel)
-		{
-			OctreeNode removedNode = BranchList[currentLevel][0];	// retrieve the smallest node in the level
-			BranchList[currentLevel].Remove(removedNode);			// and remove it from the level
-
-			foreach (OctreeNode child in removedNode.Children)
-			{
-				if (child != null)
-				{
-					LeafList.Remove(child);							// remove all the children nodes
-				}													// and nullize the children array
-			}
-			removedNode.Children = null;
-
-			removedNode.Leaf = true;								// make the node leaf
-			LeafList.Add(removedNode);								// and add it to the leaf container
-		}
-
-		public DirectBitmap Quantize(DirectBitmap bitmap, int colorCount)
-		{
-			DynamicOctree octree = new DynamicOctree(bitmap, colorCount);
-			DirectBitmap resultBitmap = new DirectBitmap(bitmap.Width, bitmap.Height);
-
-			for (int x = 0; x < resultBitmap.Width; ++x)
-			{
-				for (int y = 0; y < resultBitmap.Height; ++y)
-				{
-					resultBitmap[x, y] = octree.QuantizePixel(bitmap[x, y]);
-				}
-			}
-			return resultBitmap;
 		}
 	}
 }

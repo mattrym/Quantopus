@@ -49,7 +49,7 @@
     <Compile Include="Colors\RGB.cs" />
     <Compile Include="DirectBitmap.cs" />
     <Compile Include="OctalTree\DynamicOctree.cs" />
-    <Compile Include="OctalTree\IQuantizer.cs" />
+    <Compile Include="OctalTree\OctreeQuantizer.cs" />
     <Compile Include="OctalTree\StaticOctree.cs" />
     <Compile Include="OctalTree\OctreeNode.cs" />
     <Compile Include="Window.cs">
