@@ -14,19 +14,8 @@ namespace Quantopus.OctalTree
 
 		public RGB RGB { get; set; }
 		public bool Leaf { get; set; }
+		public int RGBInt { get; private set; }
 
-		public OctreeNode()
-		{
-		}
-
-		public OctreeNode(bool _leaf)
-		{
-			Leaf = _leaf;
-			if (!Leaf)
-			{
-				Children = new OctreeNode[8];
-			}
-		}
 		public void AddReference(int _rgb)
 		{
 			ReferenceCount++;

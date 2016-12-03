@@ -1,6 +1,7 @@
 ﻿using Quantopus.Colors;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,56 +14,28 @@ namespace Quantopus.OctalTree
 		{
 		}
 
-		protected override void ConstructTree()
+		public override void ConstructTree()
 		{
 			foreach (int bit in originalBitmap.Bits)
 			{
 				AddColor(bit);
+				ReduceTree();
 			}
 		}
 
-		protected override void AddColor(int rgb)
+		public override void ConstructTreeWithProgressReporting(BackgroundWorker bgWorker)
 		{
-			int[] octTriples = RGB.OctTriples(rgb);
-			OctreeNode childNode, currentNode = Head;
-
-			for (int levelIndex = 0; levelIndex < 8; ++levelIndex)
+			int progress = 0;
+			for (int i = 0; i < originalBitmap.Bits.Length; ++i)
 			{
-				int childIndex = octTriples[levelIndex];
-				if (currentNode.Children == null)
-				{
-					if(!currentNode.Leaf)
-					{
-						currentNode.Children = new OctreeNode[8];
-						BranchList[levelIndex].Add(currentNode);
-					}
-					else
-					{
-						break;
-					}
-				}
-				if (currentNode.Children[childIndex] == null)
-				{
-					childNode = new OctreeNode();
-					if (levelIndex == 7)
-					{
-						LeafList.Add(childNode);
-						childNode.Leaf = true;
-					}
-					currentNode.Children[childIndex] = childNode;
-				}
-				else
-				{
-					childNode = currentNode.Children[childIndex];
-				}
-				currentNode.AddReference(rgb);
-				currentNode = childNode;
-			}
-			currentNode.AddReference(rgb);
-			if(LeafList.Count > colorCount)
-			{
+				AddColor(originalBitmap.Bits[i]);
 				ReduceTree();
+				if (i > (progress + 1) * originalBitmap.Bits.Length / 100)
+				{
+					bgWorker.ReportProgress(++progress);
+				}
 			}
+			bgWorker.ReportProgress(++progress);
 		}
 	}
 }
