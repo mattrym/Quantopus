@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Colors\GrayScaler.cs" />
     <Compile Include="Colors\RGB.cs" />
     <Compile Include="DirectBitmap.cs" />
     <Compile Include="OctalTree\DynamicOctree.cs" />

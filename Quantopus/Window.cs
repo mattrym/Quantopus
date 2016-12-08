@@ -1,4 +1,5 @@
-﻿using Quantopus.OctalTree;
+﻿using Quantopus.Colors;
+using Quantopus.OctalTree;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +33,9 @@ namespace Quantopus
 			{
 				Bitmap bitmap = new Bitmap(fileDialog.FileName);
 				originalBitmap = DirectBitmap.FromBitmap(bitmap);
-                originalPictureBox.Image = bitmap;
+                reducedBitmap = originalBitmap;
+                originalPictureBox.Image = originalBitmap.Bitmap;
+                quantizedPictureBox.Image = reducedBitmap.Bitmap;
 
 				saveToolStripMenuItem.Enabled = true;
 				editToolStripMenuItem.Enabled = true;
@@ -95,5 +98,13 @@ namespace Quantopus
 		{
 			quantizeProgressBar.Value = 0;
 		}
-	}
+
+        private void grayscaleToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            originalBitmap = GrayScaler.ToGray(originalBitmap);
+            reducedBitmap = GrayScaler.ToGray(reducedBitmap);
+            originalPictureBox.Image = originalBitmap.Bitmap;
+            quantizedPictureBox.Image = reducedBitmap.Bitmap;
+        }
+    }
 }

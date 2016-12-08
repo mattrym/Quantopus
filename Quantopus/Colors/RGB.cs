@@ -34,6 +34,14 @@ namespace Quantopus.Colors
 			return octTriples;
 		}
 
+        /* returns the gray-scaled RGB integer value */
+        public static int ToGray(int rgb)
+        {
+            int r = (rgb >> 16) & 0xFF, g = (rgb >> 8) & 0xFF, b = rgb & 0xFF;
+            int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+            return 255 << 24 | gray << 16 | gray << 8 | gray;
+        }
+
 		/* allows aggregating large RGB values */ 
 		public static RGB operator +(RGB rgb1, RGB rgb2)
 		{

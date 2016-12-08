@@ -14,7 +14,6 @@ namespace Quantopus.OctalTree
 
 		public RGB RGB { get; set; }
 		public bool Leaf { get; set; }
-		public int RGBInt { get; private set; }
 
 		public void AddReference(int _rgb)
 		{
